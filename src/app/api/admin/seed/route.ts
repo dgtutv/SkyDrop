@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectMongo } from '@/lib/database/mongoose';
-import User from '@/lib/database/models/User';
+import User from '@/lib/database/models/user';
 import AccessPoint from '@/lib/database/models/AccessPointSchema';
 import Product from '@/lib/database/models/product';
 import Delivery from '@/lib/database/models/Delivery';
