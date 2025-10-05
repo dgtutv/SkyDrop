@@ -1,7 +1,6 @@
 {
   "name": "sky_drop",
   "version": "0.1.0",
-  "homepage": "https://dgtutv.github.io/SkyDrop",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
