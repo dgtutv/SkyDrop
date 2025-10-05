@@ -40,27 +40,31 @@ export const skyTrainNetwork: Map<string, SkyTrainStation> = new Map();
  * Returns the number of stations between origin and destination
  */
 export function calculateStationDistance(fromStationId: string, toStationId: string): number {
-    if (fromStationId === toStationId) return 0;
+    // Normalize to lowercase for comparison
+    const fromId = fromStationId.toLowerCase();
+    const toId = toStationId.toLowerCase();
+    
+    if (fromId === toId) return 0;
 
-    const fromStation = skyTrainNetwork.get(fromStationId);
-    const toStation = skyTrainNetwork.get(toStationId);
+    const fromStation = skyTrainNetwork.get(fromId);
+    const toStation = skyTrainNetwork.get(toId);
 
     if (!fromStation || !toStation) {
-        throw new Error('Invalid station ID');
+        throw new Error(`Invalid station ID: from="${fromStationId}" to="${toStationId}"`);
     }
 
     // BFS to count hops (stations) between origin and destination
-    const queue: Array<{ stationId: string; hops: number }> = [{ stationId: fromStationId, hops: 0 }];
-    const visited = new Set<string>([fromStationId]);
+    const queue: Array<{ stationId: string; hops: number }> = [{ stationId: fromId, hops: 0 }];
+    const visited = new Set<string>([fromId]);
 
     while (queue.length > 0) {
         const current = queue.shift()!;
 
-        if (current.stationId === toStationId) {
+        if (current.stationId === toId) {
             return current.hops;
         }
 
-        const currentStation = skyTrainNetwork.get(current.stationId)!;
+        const currentStation = skyTrainNetwork.get(current.stationId)!
 
         for (const nextStationId of currentStation.connections) {
             if (!visited.has(nextStationId)) {
