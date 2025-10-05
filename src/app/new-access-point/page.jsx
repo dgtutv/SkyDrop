@@ -171,6 +171,7 @@ const NewAccessPointPage = ({ radius = DEFAULT_RADIUS }) => {
       'Brentwood Town Centre': 'brentwood',
       'Holdom': 'holdom',
       'Sperling - Burnaby Lake': 'sperling',
+      'Sperling': 'sperling', // Add common variants
       'Lake City Way': 'lake-city',
       'Production Way - University': 'production-way',
       'Lougheed Town Centre': 'lougheed',
@@ -182,7 +183,26 @@ const NewAccessPointPage = ({ radius = DEFAULT_RADIUS }) => {
       'Lafarge Lake-Douglas': 'lafarge',
       // Add more mappings as needed
     };
-    return nameToIdMap[stationName] || stationName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    
+    // Valid station IDs from skytrainNetwork.ts
+    const validStationIds = new Set([
+      'vcc-clark', 'commercial-broadway', 'renfrew', 'rupert', 'gilmore',
+      'brentwood', 'holdom', 'sperling', 'lake-city', 'production-way',
+      'lougheed', 'burquitlam', 'moody-centre', 'inlet-centre',
+      'coquitlam-central', 'lincoln', 'lafarge'
+    ]);
+    
+    const mapped = nameToIdMap[stationName] || stationName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    
+    // Return the mapped ID only if it's valid, otherwise return the closest match
+    if (validStationIds.has(mapped)) {
+      return mapped;
+    }
+    
+    // If no valid mapping found, try to find the closest station based on the nearest station
+    // This should only happen if someone creates an access point at a custom location
+    console.warn(`Invalid station name "${stationName}", using nearest valid station`);
+    return nearest?.name ? convertStationNameToId(nearest.name) : 'commercial-broadway'; // fallback to a central station
   };
 
   // Handle creating the access point
